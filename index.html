@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        width:300px;
+      }
+
+      input {
+        width: 100px;
+      }
+
+      button {
+        height: 30px;
+        width: 300px;
+        outline: none;
+        cursor:pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="time" id="appt" name="appt" id="input1"
+      min="00:00" max="23:59" value="09:00" required> -
+      <input type="time" id="appt" name="appt" id="input2"
+      min="00:00" max="23:59" value="13:00" required>
+      <input type="time" id="appt" name="appt" id="input3"
+      min="00:00" max="23:59" value="14:00"> -
+      <input type="time" id="appt" name="appt"id="input4"
+      min="00:00" max="23:59" value="18:00">
+    <button id="launchScript">Fill report</button>
+    <script src="library.js"></script>
+  </body>
+</html>

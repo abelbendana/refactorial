@@ -1,0 +1,21 @@
+{
+    "name": "Refactorial",
+    "version": "1.1",
+    "description": "Save time filling automatically your work report.",
+    "manifest_version": 2,
+    "page_action": {
+        "default_title": "Fill report",
+        "default_popup": "index.html"
+    },
+    "background": {
+        "scripts": ["background.js","library.js"],
+        "persistent": false
+      },
+      "permissions": ["activeTab", "declarativeContent", "storage", "https://api.factorialhr.com/","tabs"],
+      "icons": {
+        "16": "images/16ico.png",
+		"32": "images/32ico.png",
+		"64": "images/64ico.png",
+        "128": "images/128ico.png"
+      }
+  }
