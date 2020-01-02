@@ -59,7 +59,8 @@ async function getData(mode, tab){
 async function main(mode, tab){
     try{
         await getData(mode, tab);
-        let employee_id = await getEmployeeId();
+        let access_id = await getAccessId();
+        let employee_id = await getEmployeeId(access_id);
         let period_id = await getPeriodId(employee_id);
         let days_to_fill = await getDaysToFill(employee_id);
         await fillDays(period_id,days_to_fill);
@@ -70,7 +71,7 @@ async function main(mode, tab){
     }
 }
 
-async function getEmployeeId(){
+async function getAccessId(){
     try{
         const response = await fetch(factorialURL + "/accesses", {
             method: "GET"
@@ -79,9 +80,31 @@ async function getEmployeeId(){
         if (response.ok) {
             const jsonResponse = await response.json();
 
-            for(var index = 0; index < jsonResponse.length; index++) {
+            for(let index = 0; index < jsonResponse.length; index++) {
                 if(jsonResponse[index].current){
-                    return jsonResponse[0].user_id;
+                    return jsonResponse[0].id;
+                }
+            }
+
+            throw "Unable to find access id."
+        }
+    }catch(error) {
+        throw "Unable to find access id";
+    }
+}
+
+async function getEmployeeId(accessId){
+    try{
+        const response = await fetch(factorialURL + "/employees", {
+            method: "GET"
+        });
+
+        if (response.ok) {
+            const jsonResponse = await response.json();
+
+            for(let index = 0; index < jsonResponse.length; index++) {
+                if(jsonResponse[index].access_id === accessId){
+                    return jsonResponse[0].id;
                 }
             }
 
@@ -117,7 +140,7 @@ async function getDaysToFill(employeeId){
             let arrayDates = [];
             const jsonResponse = await response.json();
             jsonResponse.forEach(element => {
-                if(element.is_laborable && !element.is_leave && element.day <= new Date().getDate()){
+                if(element.is_laborable && !element.is_leave && new Date(element.date) <= new Date()){
                     arrayDates.push(element.day);
                 }
             });
