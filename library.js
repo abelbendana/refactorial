@@ -5,11 +5,11 @@ let slot4;
 let tabURL;
 let workMonth;
 let workYear;
-let factorialURL = "https://api.factorialhr.com"; 
+let factorialURL = "https://api.factorialhr.com";
 let scriptButton = document.getElementById("launchScript");
 
 if(scriptButton){
-    
+
     scriptButton.onclick = function () {
         main(0, null);
     };
@@ -72,16 +72,23 @@ async function main(mode, tab){
 
 async function getEmployeeId(){
     try{
-        const response = await fetch(factorialURL + "/tasks", {
+        const response = await fetch(factorialURL + "/accesses", {
             method: "GET"
         });
 
         if (response.ok) {
             const jsonResponse = await response.json();
-            return jsonResponse[0].employee_id;
+
+            for(var index = 0; index < jsonResponse.length; index++) {
+                if(jsonResponse[index].current){
+                    return jsonResponse[0].user_id;
+                }
+            }
+
+            throw "Unable to find user."
         }
     }catch(error) {
-        throw "Nothing to report";
+        throw "Unable to find user";
     }
 }
 
