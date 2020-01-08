@@ -1,6 +1,6 @@
 {
     "name": "Refactorial",
-    "version": "1.2",
+    "version": "1.3",
     "description": "Save time filling automatically your work report.",
     "manifest_version": 2,
     "page_action": {
