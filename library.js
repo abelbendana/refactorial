@@ -82,7 +82,7 @@ async function getAccessId(){
 
             for(let index = 0; index < jsonResponse.length; index++) {
                 if(jsonResponse[index].current){
-                    return jsonResponse[0].id;
+                    return jsonResponse[index].id;
                 }
             }
 
@@ -104,7 +104,7 @@ async function getEmployeeId(accessId){
 
             for(let index = 0; index < jsonResponse.length; index++) {
                 if(jsonResponse[index].access_id === accessId){
-                    return jsonResponse[0].id;
+                    return jsonResponse[index].id;
                 }
             }
 
