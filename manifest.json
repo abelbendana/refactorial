@@ -11,7 +11,7 @@
         "scripts": ["background.js","library.js"],
         "persistent": false
       },
-      "permissions": ["activeTab", "declarativeContent", "https://api.factorialhr.com/","tabs"],
+      "permissions": ["declarativeContent", "https://api.factorialhr.com/","tabs"],
       "icons": {
         "16": "images/16ico.png",
 		"32": "images/32ico.png",
