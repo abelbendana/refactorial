@@ -1,32 +1,85 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
     <style>
       body {
-        width:300px;
+        width: 300px;
       }
 
       input {
         width: 100px;
       }
 
-      button {
+      #launchScript {
         height: 30px;
         width: 300px;
         outline: none;
-        cursor:pointer;
+        cursor: pointer;
+      }
+
+      .row {
+        display: inline;
+        width: 280px;
+      }
+
+      #deleteButton {
+        cursor: pointer;
+        width: 30px;
+        background: none;
+        border: none;
       }
     </style>
   </head>
   <body>
-    <input type="time" id="appt" name="appt" id="input1"
-      min="00:00" max="23:59" value="09:00" required> -
-      <input type="time" id="appt" name="appt" id="input2"
-      min="00:00" max="23:59" value="13:00" required>
-      <input type="time" id="appt" name="appt" id="input3"
-      min="00:00" max="23:59" value="14:00"> -
-      <input type="time" id="appt" name="appt"id="input4"
-      min="00:00" max="23:59" value="18:00">
+    <div class="row">
+      <input
+        type="time"
+        name="appt"
+        id="input1"
+        min="00:00"
+        max="23:59"
+        value="09:00"
+        required
+      />
+      -
+      <input
+        type="time"
+        name="appt"
+        id="input2"
+        min="00:00"
+        max="23:59"
+        value="13:00"
+        required
+      />
+    </div>
+    <div class="row" id="secondRow">
+      <input
+        type="time"
+        name="appt"
+        id="input3"
+        min="00:00"
+        max="23:59"
+        value="14:00"
+      />
+      -
+      <input
+        type="time"
+        name="appt"
+        id="input4"
+        min="00:00"
+        max="23:59"
+        value="18:00"
+      />
+      <button id="deleteButton">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+
     <button id="launchScript">Fill report</button>
     <script src="library.js"></script>
   </body>
