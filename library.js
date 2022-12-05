@@ -28,12 +28,12 @@ const getSlots = (mode) => {
     slot5 = base[5]?.split("=")[1];
     slot6 = base[6]?.split("=")[1];
   } else {
-    slot1 = document.getElementsByTagName("input")[0]?.value;
-    slot2 = document.getElementsByTagName("input")[1]?.value;
-    slot3 = document.getElementsByTagName("input")[4]?.value;
-    slot4 = document.getElementsByTagName("input")[5]?.value;
-    slot5 = document.getElementsByTagName("input")[2]?.value;
-    slot6 = document.getElementsByTagName("input")[3]?.value;
+    slot1 = document.getElementsByID("input1")?.value;
+    slot2 = document.getElementsByID("input2")?.value;
+    slot3 = document.getElementsByID("input3")?.value;
+    slot4 = document.getElementsByID("input4")?.value;
+    slot5 = document.getElementsByID("input5")?.value;
+    slot6 = document.getElementsByID("input6")?.value;
   }
 };
 
