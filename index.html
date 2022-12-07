@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' data: gap: * 'unsafe-eval';
+        style-src 'self' * 'unsafe-inline';
+        font-src 'self' *;
+        media-src *;
+        script-src 'self' * 'unsafe-inline' 'unsafe-eval';
+      "
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
+    <link rel="stylesheet" href="all.min.css" />
+    <script src="all.min.js"></script>
     <style>
       body {
         width: 300px;
@@ -37,6 +44,7 @@
   </head>
   <body>
     <div class="row">
+      <h3>Erste Schicht:</h3>
       <input
         type="time"
         name="appt"
@@ -57,7 +65,33 @@
         required
       />
     </div>
+
+    <div class="row" id="pauseRow">
+      <h3>Pause:</h3>
+      <input
+        type="time"
+        name="appt"
+        id="input5"
+        min="00:00"
+        max="23:59"
+        value="13:00"
+      />
+      -
+      <input
+        type="time"
+        name="appt"
+        id="input6"
+        min="00:00"
+        max="23:59"
+        value="14:00"
+      />
+      <button id="deleteButton">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+
     <div class="row" id="secondRow">
+      <h3>Zweite Schicht:</h3>
       <input
         type="time"
         name="appt"
@@ -79,6 +113,10 @@
         <i class="fa fa-trash" aria-hidden="true"></i>
       </button>
     </div>
+
+    <br />
+
+    <br />
 
     <button id="launchScript">Fill report</button>
     <script src="library.js"></script>

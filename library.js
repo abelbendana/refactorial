@@ -2,6 +2,8 @@ let slot1;
 let slot2;
 let slot3;
 let slot4;
+let slot5;
+let slot6;
 let tabURL;
 let workMonth;
 let workYear;
@@ -11,9 +13,8 @@ const setUrl = async (tab) => {
   if (tab) {
     tabURL = tab.url;
   } else {
-    tabURL = await new Promise((resolve) => {
-      chrome.tabs.getSelected(null, (tab) => resolve(tab.url));
-    });
+    tab = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    tabURL = tab[0].url;
   }
 };
 
@@ -24,11 +25,15 @@ const getSlots = (mode) => {
     slot2 = base[2]?.split("=")[1];
     slot3 = base[3]?.split("=")[1];
     slot4 = base[4]?.split("=")[1];
+    slot5 = base[5]?.split("=")[1];
+    slot6 = base[6]?.split("=")[1];
   } else {
-    slot1 = document.getElementsByTagName("input")[0]?.value;
-    slot2 = document.getElementsByTagName("input")[1]?.value;
-    slot3 = document.getElementsByTagName("input")[2]?.value;
-    slot4 = document.getElementsByTagName("input")[3]?.value;
+    slot1 = document.getElementById("input1")?.value;
+    slot2 = document.getElementById("input2")?.value;
+    slot3 = document.getElementById("input3")?.value;
+    slot4 = document.getElementById("input4")?.value;
+    slot5 = document.getElementById("input5")?.value;
+    slot6 = document.getElementById("input6")?.value;
   }
 };
 
@@ -55,6 +60,7 @@ const getAccessId = async () => {
 
     if (response.ok) {
       const jsonResponse = await response.json();
+
 
       for (let index = 0; index < jsonResponse.length; index++) {
         if (jsonResponse[index].current) {
@@ -133,6 +139,7 @@ const getDaysToFill = async (employeeId) => {
     if (response.ok) {
       let arrayDates = [];
       const jsonResponse = await response.json();
+      console.log(jsonResponse)
       jsonResponse.forEach((element) => {
         if (
           element.is_laborable &&
@@ -149,11 +156,17 @@ const getDaysToFill = async (employeeId) => {
   }
 };
 
-const fillDays = async (periodId, days) => {
+const fillDays = async (periodId, days, employeeId) => {
   try {
     if (slot1 && slot2) {
       days.forEach((dayToFill) => {
         fillDay(periodId, dayToFill, slot1, slot2);
+      });
+    }
+
+    if (slot5 && slot6) {
+      days.forEach((dayToFill) => {
+        fillDay(periodId, dayToFill, slot5, slot6, false);
       });
     }
 
@@ -167,7 +180,7 @@ const fillDays = async (periodId, days) => {
   }
 };
 
-const fillDay = async (periodId, dayToFill, clockIn, clockOut) => {
+const fillDay = async (periodId, dayToFill, clockIn, clockOut, workable = true) => {
   try {
     const response = await fetch(factorialURL + "/attendance/shifts", {
       body: JSON.stringify({
@@ -175,6 +188,7 @@ const fillDay = async (periodId, dayToFill, clockIn, clockOut) => {
         clock_out: clockOut,
         day: dayToFill,
         period_id: periodId,
+        workable
       }),
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -194,9 +208,10 @@ const main = async (mode, tab) => {
     let employee_id = await getEmployeeId(access_id);
     let period_id = await getPeriodId(employee_id);
     let days_to_fill = await getDaysToFill(employee_id);
-    await fillDays(period_id, days_to_fill);
+    await fillDays(period_id, days_to_fill, employee_id);
     alert("Worked hours added correctly. Refreshing.");
-    chrome.tabs.reload();
+
+    chrome.tabs.reload()
   } catch (error) {
     alert("error: " + error);
   }
@@ -206,16 +221,23 @@ const removeSecondRow = () => {
   document.getElementById("secondRow").remove();
 };
 
+const removePauseRow = () => {
+  document.getElementById("pauseRow").remove();
+};
+
 const launchScript = () => {
   main(0, null);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("deleteButton")
-    .addEventListener("click", removeSecondRow);
+if (typeof document !== 'undefined') {
+  document.addEventListener("DOMContentLoaded", () => {
+    const result = document.querySelectorAll('#deleteButton')
+    result[0].addEventListener('click', removePauseRow)
+    result[1].addEventListener('click', removeSecondRow)
 
-  document
-    .getElementById("launchScript")
-    .addEventListener("click", launchScript);
-});
+    document
+      .getElementById("launchScript")
+      .addEventListener("click", launchScript);
+  });
+}
+

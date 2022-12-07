@@ -15,10 +15,10 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 });
 
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  if(changeInfo.status == 'complete'){
-    if(tab.url.indexOf("app.factorialhr.com/attendance/clock-in?doPost=1") != -1){
-      main(1, tab);
-    }
-  }
-})
+// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+//   if(changeInfo.status == 'complete'){
+//     if(tab.url.indexOf("app.factorialhr.com/attendance/clock-in?doPost=1") != -1){
+//       main(1, tab);
+//     }
+//   }
+// })
