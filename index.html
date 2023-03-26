@@ -11,110 +11,220 @@
         script-src 'self' * 'unsafe-inline' 'unsafe-eval';
       "
     />
-    <link rel="stylesheet" href="all.min.css" />
-    <script src="all.min.js"></script>
     <style>
-      body {
-        width: 300px;
-      }
-
-      input {
-        width: 100px;
-      }
-
-      #launchScript {
-        height: 30px;
-        width: 300px;
-        outline: none;
+      button {
         cursor: pointer;
       }
 
-      .row {
-        display: inline;
-        width: 280px;
+      h3 {
+        margin: 0;
+      }
+
+      input[type="checkbox"] {
+        width: auto;
       }
 
       #deleteButton {
-        cursor: pointer;
-        width: 30px;
         background: none;
         border: none;
+      }
+
+      #fillTimesheet {
+        color: #E51943;
+        border: 2px solid #E51943;
+        border-radius: 30px;
+        background-color: #fff;
+        padding: 4px 10px;
+      }
+      
+      #fillTimesheet:hover {
+        background-color: #FFD7DF;
+      }
+
+      #loader {
+        display: inline-block;
+        height: 50px;
+        padding: 41px 106px;
+        width: 50px;
+      }
+      
+      #loader:before {
+        content: " ";
+        display: block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 6px solid #000;
+        border-color: #000 transparent #000 transparent;
+        animation: loader-animation 1.2s linear infinite;
+      }
+
+      @keyframes loader-animation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .row {
+        display: flex;
+        margin-bottom: 8px;
+      }
+
+      .row:last-child {
+        margin-bottom: 0;
+      }
+
+      .row h3 {
+        min-width: 100px;
+      }
+
+      .va-center {
+        display: flex;
+        align-items: center;
+      }
+      
+      .ha-end {
+        display: flex;
+        justify-content: end;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .pointer {
+        cursor: pointer;
+      }
+
+      .gg-trash {
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(0.7);
+        width: 10px;
+        height: 12px;
+        border: 2px solid transparent;
+        box-shadow:
+        0 0 0 2px,
+        inset -2px 0 0,
+        inset 2px 0 0;
+        border-bottom-left-radius: 1px;
+        border-bottom-right-radius: 1px;
+        margin-top: 4px
+      }
+
+      .gg-trash::after,
+      .gg-trash::before {
+        content: "";
+        display: block;
+        box-sizing: border-box;
+        position: absolute
+      }
+
+      .gg-trash::after {
+        background: currentColor;
+        border-radius: 3px;
+        width: 16px;
+        height: 2px;
+        top: -4px;
+        left: -5px
+      }
+
+      .gg-trash::before {
+        width: 10px;
+        height: 4px;
+        border: 2px solid;
+        border-bottom: transparent;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        top: -7px;
+        left: -2px
       }
     </style>
   </head>
   <body>
-    <div class="row" id="firstShift">
-      <h3>First Shift:</h3>
-      <input
-        type="time"
-        name="appt"
-        min="00:00"
-        max="23:59"
-        value="09:00"
-        required
-      />
-      -
-      <input
-        type="time"
-        name="appt"
-        min="00:00"
-        max="23:59"
-        value="13:00"
-        required
-      />
+    <div id="window">
+      <div class="row ha-end">
+        <label class="va-center pointer">Fill with weekdays <input id="forceWeekdays" class="pointer" type="checkbox" /></label>
+      </div>
+      
+      <div class="row va-center" id="firstShift">
+        <h3>First Shift:</h3>
+        <input
+          type="time"
+          name="appt"
+          min="00:00"
+          max="23:59"
+          value="09:00"
+          required
+        />
+        -
+        <input
+          type="time"
+          name="appt"
+          min="00:00"
+          max="23:59"
+          value="13:00"
+          required
+        />
+      </div>
+
+      <div class="row va-center" id="break">
+        <h3>Break:</h3>
+        <input
+          type="time"
+          name="appt"
+          id="input5"
+          min="00:00"
+          max="23:59"
+          value="13:00"
+        />
+        -
+        <input
+          type="time"
+          name="appt"
+          id="input6"
+          min="00:00"
+          max="23:59"
+          value="14:00"
+        />
+        <button id="deleteButton">
+          <span class="gg-trash"></span>
+        </button>
+      </div>
+
+      <div class="row va-center" id="secondShift">
+        <h3>Second Shift:</h3>
+        <input
+          type="time"
+          name="appt"
+          min="00:00"
+          max="23:59"
+          value="14:00"
+        />
+        -
+        <input
+          type="time"
+          name="appt"
+          min="00:00"
+          max="23:59"
+          value="18:00"
+        />
+        <button id="deleteButton">
+          <span class="gg-trash"></span>
+        </button>
+      </div>
+      
+      <div class="row ha-end">
+        <button id="fillTimesheet">Fill report</button>
+      </div>
     </div>
 
-    <div class="row" id="break">
-      <h3>Pause:</h3>
-      <input
-        type="time"
-        name="appt"
-        id="input5"
-        min="00:00"
-        max="23:59"
-        value="13:00"
-      />
-      -
-      <input
-        type="time"
-        name="appt"
-        id="input6"
-        min="00:00"
-        max="23:59"
-        value="14:00"
-      />
-      <button id="deleteButton">
-        <i class="fa fa-trash" aria-hidden="true"></i>
-      </button>
-    </div>
+    <div id="loader" class="hidden"></div>
 
-    <div class="row" id="secondShift">
-      <h3>Second Shift:</h3>
-      <input
-        type="time"
-        name="appt"
-        min="00:00"
-        max="23:59"
-        value="14:00"
-      />
-      -
-      <input
-        type="time"
-        name="appt"
-        min="00:00"
-        max="23:59"
-        value="18:00"
-      />
-      <button id="deleteButton">
-        <i class="fa fa-trash" aria-hidden="true"></i>
-      </button>
-    </div>
-
-    <br />
-
-    <br />
-
-    <button id="fillTimesheet">Fill report</button>
     <script src="library.js"></script>
   </body>
 </html>

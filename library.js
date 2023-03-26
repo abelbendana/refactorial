@@ -1,5 +1,7 @@
 const FACTORIAL_URL = "https://api.factorialhr.com";
 
+const getForceWeekDays = () => document.getElementById("forceWeekdays").checked;
+
 const getUrlFromTab = async () => {
   const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   return tab.url;
@@ -15,7 +17,7 @@ const getSlots = () => {
     breakClockIn: breakClockIn?.value,
     breakClockOut: breakClockOut?.value,
     secondShiftClockIn: secondShiftClockIn?.value,
-    secondShiftClockOut: secondShiftClockOut?.value
+    secondShiftClockOut: secondShiftClockOut?.value,
   }
 };
 
@@ -95,21 +97,31 @@ const getDaysToFill = async (employeeId, monthAndYear) => {
   if (response.ok) {
     const arrayDates = [];
     const jsonResponse = await response.json();
-
+    
     jsonResponse.forEach((element) => {
       if (
-        element.is_laborable &&
-        !element.is_leave &&
+        (getForceWeekDays() && !isWeekend(element.date)) ||
+        (element.is_laborable && !element.is_leave) &&
         new Date(element.date) <= new Date()
       ) {
         arrayDates.push(element.day);
       }
     });
+
+    if (arrayDates.length === 0) {
+      throw "There are no available dates, try with the \"Fill with weekdays\" option";
+    }
+
     return arrayDates;
   } else {
     throw response.statusText;
   }
 };
+
+const isWeekend = (date) => {
+  const instancedDate = new Date(date);
+  return instancedDate.getDay() === 6 || instancedDate.getDay() === 0; // Saturday or Sunday
+}
 
 const fillDays = async (periodId, days, clockInAndOutInput) => {
   const {firstShiftClockIn, firstShiftClockOut, breakClockIn, breakClockOut, secondShiftClockIn, secondShiftClockOut} = clockInAndOutInput;
@@ -134,7 +146,7 @@ const fillDays = async (periodId, days, clockInAndOutInput) => {
 };
 
 const fillDay = async (periodId, dayToFill, clockIn, clockOut, workable = true) => {
-  const response = await fetch(`${FACTORIAL_URL}/attendance/shifts`, {
+  await fetch(`${FACTORIAL_URL}/attendance/shifts`, {
     body: JSON.stringify({
       clock_in: clockIn,
       clock_out: clockOut,
@@ -148,13 +160,10 @@ const fillDay = async (periodId, dayToFill, clockIn, clockOut, workable = true) 
     },
     method: "POST",
   });
-  
-  if (!response.ok) {
-    throw response.statusText;
-  }
 };
 
 const start = async () => {
+  toggleLoading(true);
   try {
     const {clockInAndOutInput, monthAndYear} = await getTabData();
     const access_id = await fetchAccessId();
@@ -167,6 +176,7 @@ const start = async () => {
   } catch (error) {
     alert("Error: " + error);
   }
+  toggleLoading(false);
 };
 
 const removeSecondShiftRow = () => {
@@ -176,6 +186,28 @@ const removeSecondShiftRow = () => {
 const removeBreakRow = () => {
   document.getElementById("break").remove();
 };
+
+const toggleLoading = (isLoading) => {
+  const windowElement = document.getElementById('window');
+  const loadingElement = document.getElementById('loader');
+
+  const windowElementClassName = windowElement.className.split(" ");
+  const loadingElementClassName = loadingElement.className.split(" ");
+
+  if (isLoading) {
+    windowElementClassName.push("hidden");
+    const newLoadingClasses = loadingElementClassName.filter(value => value !== "hidden");
+    
+    windowElement.classList = windowElementClassName.join(" ");
+    loadingElement.classList = newLoadingClasses.join(" ");
+  } else {
+    const newWindowElclasses = windowElementClassName.filter(value => value !== "hidden");
+    loadingElementClassName.push("hidden");
+    
+    windowElement.classList = newWindowElclasses.join(" ");
+    loadingElement.classList = loadingElementClassName.join(" ");
+  }
+}
 
 const fillTimesheet = () => {
   start();
