@@ -43,12 +43,11 @@
     </style>
   </head>
   <body>
-    <div class="row">
+    <div class="row" id="firstShift">
       <h3>First Shift:</h3>
       <input
         type="time"
         name="appt"
-        id="input1"
         min="00:00"
         max="23:59"
         value="09:00"
@@ -58,7 +57,6 @@
       <input
         type="time"
         name="appt"
-        id="input2"
         min="00:00"
         max="23:59"
         value="13:00"
@@ -66,7 +64,7 @@
       />
     </div>
 
-    <div class="row" id="pauseRow">
+    <div class="row" id="break">
       <h3>Pause:</h3>
       <input
         type="time"
@@ -90,12 +88,11 @@
       </button>
     </div>
 
-    <div class="row" id="secondRow">
+    <div class="row" id="secondShift">
       <h3>Second Shift:</h3>
       <input
         type="time"
         name="appt"
-        id="input3"
         min="00:00"
         max="23:59"
         value="14:00"
@@ -104,7 +101,6 @@
       <input
         type="time"
         name="appt"
-        id="input4"
         min="00:00"
         max="23:59"
         value="18:00"
@@ -118,7 +114,7 @@
 
     <br />
 
-    <button id="launchScript">Fill report</button>
+    <button id="fillTimesheet">Fill report</button>
     <script src="library.js"></script>
   </body>
 </html>
