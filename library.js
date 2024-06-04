@@ -13,8 +13,13 @@ const setUrl = async (tab) => {
   if (tab) {
     tabURL = tab.url;
   } else {
-    tab = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-    tabURL = tab[0].url;
+    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    
+    if (!tab) {
+      throw 'Unable to find tab';
+    }
+
+    tabURL = tab.url;
   }
 };
 
@@ -144,12 +149,12 @@ const getDaysToFill = async (employeeId) => {
         const isPastDate = new Date(element.date) <= new Date();
 
         if (isWorkableDay && isPastDate) {
-          return arrayDates.push(element.day);
+          return arrayDates.push(element);
         }
 
         const isMobileOffice = element.leaves?.[0]?.name === 'Mobile Office';
         if (isMobileOffice && isPastDate) {
-          arrayDates.push(element.day);
+          arrayDates.push(element);
         }
       });
 
@@ -163,20 +168,26 @@ const getDaysToFill = async (employeeId) => {
 const fillDays = async (periodId, days, employeeId) => {
   try {
     if (slot1 && slot2) {
-      days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot1, slot2);
+      days.forEach((day) => {
+        const dayToFill = day.day;
+        const dateToFill = day.date;
+        fillDay(periodId, dayToFill, dateToFill, slot1, slot2);
       });
     }
 
     if (slot5 && slot6) {
-      days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot5, slot6, false);
+      days.forEach((day) => {
+        const dayToFill = day.day;
+        const dateToFill = day.date;
+        fillDay(periodId, dayToFill, dateToFill, slot5, slot6, false);
       });
     }
 
     if (slot3 && slot4) {
-      days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot3, slot4);
+      days.forEach((day) => {
+        const dayToFill = day.day;
+        const dateToFill = day.date;
+        fillDay(periodId, dayToFill, dateToFill, slot3, slot4);
       });
     }
   } catch (error) {
@@ -187,6 +198,7 @@ const fillDays = async (periodId, days, employeeId) => {
 const fillDay = async (
   periodId,
   dayToFill,
+  dateToFill,
   clockIn,
   clockOut,
   workable = true,
@@ -197,6 +209,7 @@ const fillDay = async (
         clock_in: clockIn,
         clock_out: clockOut,
         day: dayToFill,
+        date: dateToFill,
         period_id: periodId,
         workable,
       }),

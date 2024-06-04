@@ -13,7 +13,8 @@
     },
     "permissions": [
         "declarativeContent",
-        "tabs"
+        "tabs",
+        "activeTab"
     ],
     "host_permissions": [
         "https://api.factorialhr.com/*",
