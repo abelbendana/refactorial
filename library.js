@@ -7,6 +7,7 @@ let slot6;
 let tabURL;
 let workMonth;
 let workYear;
+let daysOfWeekSelected = [];
 let factorialURL = "https://api.factorialhr.com";
 
 const setUrl = async (tab) => {
@@ -137,15 +138,17 @@ const getDaysToFill = async (employeeId) => {
     );
 
     if (response.ok) {
+		
       let arrayDates = [];
       const jsonResponse = await response.json();
-      console.log(jsonResponse)
+	  
       jsonResponse.forEach((element) => {
         if (
           element.is_laborable &&
           !element.is_leave &&
           new Date(element.date) <= new Date()
         ) {
+		  if(!daysOfWeekSelected.includes(new Date(element.id).getDay())) return;
           arrayDates.push(element.day);
         }
       });
@@ -156,23 +159,23 @@ const getDaysToFill = async (employeeId) => {
   }
 };
 
-const fillDays = async (periodId, days, employeeId) => {
+const fillDays = async (days, employeeId) => {
   try {
     if (slot1 && slot2) {
       days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot1, slot2);
+        fillDay(dayToFill, slot1, slot2, employeeId);
       });
     }
 
     if (slot5 && slot6) {
       days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot5, slot6, false);
+        createBreak(dayToFill, slot5, slot6, employeeId);
       });
     }
 
     if (slot3 && slot4) {
       days.forEach((dayToFill) => {
-        fillDay(periodId, dayToFill, slot3, slot4);
+        fillDay(dayToFill, slot3, slot4, employeeId);
       });
     }
   } catch (error) {
@@ -180,15 +183,36 @@ const fillDays = async (periodId, days, employeeId) => {
   }
 };
 
-const fillDay = async (periodId, dayToFill, clockIn, clockOut, workable = true) => {
+const fillDay = async (dayToFill, clockIn, clockOut, employeeId) => {
   try {
-    const response = await fetch(factorialURL + "/attendance/shifts", {
+	let datetimeStart = workYear + "-" + workMonth + "-" + dayToFill + "T" + clockIn + ":00-00:00";
+    let datetimeEnd = workYear + "-" + workMonth + "-" + dayToFill + "T" + clockOut + ":00-00:00";
+    const response = await fetch(factorialURL + "/api/v2/time/attendance", {
       body: JSON.stringify({
-        clock_in: clockIn,
-        clock_out: clockOut,
-        day: dayToFill,
-        period_id: periodId,
-        workable
+        clock_in: datetimeStart,
+        clock_out: datetimeEnd,
+		employee_id: employeeId
+      }),
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      method: "POST",
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const createBreak = async (dayToFill, clockIn, clockOut, employeeId) => {
+  try {
+	let datetimeStart = workYear + "-" + workMonth + "-" + dayToFill + "T" + clockIn + ":00-00:00";
+    let datetimeEnd = workYear + "-" + workMonth + "-" + dayToFill + "T" + clockOut + ":00-00:00";
+    const response = await fetch(factorialURL + "/api/v1/time/breaks", {
+      body: JSON.stringify({
+        break_start: datetimeStart,
+        break_end: datetimeEnd,
+		employee_id: employeeId
       }),
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -206,9 +230,8 @@ const main = async (mode, tab) => {
     await getData(mode, tab);
     let access_id = await getAccessId();
     let employee_id = await getEmployeeId(access_id);
-    let period_id = await getPeriodId(employee_id);
     let days_to_fill = await getDaysToFill(employee_id);
-    await fillDays(period_id, days_to_fill, employee_id);
+    await fillDays(days_to_fill, employee_id);
     alert("Worked hours added correctly. Refreshing.");
 
     chrome.tabs.reload()
