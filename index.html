@@ -43,6 +43,12 @@
     </style>
   </head>
   <body>
+  <div class="col-md-4">
+	  <div class="form-group">
+		<label class="control-label" for="WorkWeek">Apply for d</label>
+		<input name="WorkWeek" class="form-control days-of-week" id="WorkWeek" type="text" value=" M    S" data-bind="value: WorkWeek">
+	  </div>
+	</div>
     <div class="row">
       <h3>First Shift:</h3>
       <input
@@ -115,10 +121,16 @@
     </div>
 
     <br />
-
     <br />
 
     <button id="launchScript">Fill report</button>
     <script src="library.js"></script>
+	
+	<br />
+    <br />
+	
+	<a href="https://www.buymeacoffee.com/refactorial" target="_blank">
+		<img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 100% !important;" >
+	</a>
   </body>
 </html>
