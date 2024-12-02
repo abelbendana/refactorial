@@ -39,11 +39,11 @@ const getSlots = (mode) => {
 };
 
 const setMonth = () => {
-  workMonth = tabURL.split("clock-in/")[1].split("/")[1];
+  workMonth = tabURL.split("clock-in/")[1].split("/")[2];
 };
 
 const setYear = () => {
-  workYear = tabURL.split("clock-in/")[1].split("/")[0];
+  workYear = tabURL.split("clock-in/")[1].split("/")[1];
 };
 
 const getData = async (mode, tab) => {
